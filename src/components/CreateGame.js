@@ -10,6 +10,7 @@ class CreateGame extends Component {
     
     componentDidMount() {
         this.props.fetchCategories()
+        console.log(this.props)
     }
 
 

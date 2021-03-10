@@ -5,10 +5,10 @@ class GameLobby extends Component {
 
 
 
-    rennder() {
+    render() {
         return (
             <div>
-
+                <h1>You're in the lobby!</h1>
             </div>
         )
     }

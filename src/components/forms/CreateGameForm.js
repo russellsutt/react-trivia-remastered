@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Container } from 'react-bootstrap'
 import { connect } from 'react-redux'
+import { fetchQuestions } from '../../actions/thunks/fetchQuestions'
+import { withRouter } from 'react-router-dom'
 
 
 class CreateGameForm extends Component {
@@ -9,25 +11,33 @@ class CreateGameForm extends Component {
         roomName: '',
         amount: '5',
         category: '',
-        categoryId: 0,
+        categoryId: '',
         difficulty: 'easy',
     }
 
+    componentDidMount() {
+        console.log(this.props)
+    }
     changeHandler = (e) => {
         this.setState({ [e.target.name]: e.target.value })
-        console.log(this.state)
     }
 
     renderCategories = () => {
         let renderedOptions = this.props.categories.map(category => {
-            return <option onSelect={() => { this.setState({ categoryId: category.id }) }} key={category.id} value={category.name}>{category.name}</option>
+            return <option onClick={() => { this.setState({ categoryId: category.id }) }} key={category.id} value={category.name}>{category.name}</option>
         })
         return renderedOptions
     }
 
+    submitHandler = (e) => {
+        e.preventDefault()
+        this.props.fetchQuestions(this.state.amount, this.state.categoryId, this.state.difficulty)
+        this.props.history.push('/lobby')
+    }
+
     render() {
         return (
-            <Form type="submit" onSubmit={this.createNewRoom}>
+            <Form type="submit" onSubmit={this.submitHandler}>
                 <Form.Group>
                     <h3>Room Name</h3>
                     <Form.Control type="text" name="roomName" onChange={this.changeHandler} placeholder="Create a room name" />
@@ -44,6 +54,7 @@ class CreateGameForm extends Component {
                     <h3>Category</h3>
                     <Form.Control as='select' name="category" value={this.state.category} onChange={this.changeHandler}>
                         <option value=''>-- Please select a category --</option>
+                        <option value=''>Miscellaneous</option>
                         {this.renderCategories()}
                     </Form.Control>
                 </Form.Group>
@@ -60,4 +71,5 @@ class CreateGameForm extends Component {
     }
 }
 
-export default CreateGameForm
+
+export default withRouter(connect(null, { fetchQuestions } )(CreateGameForm))

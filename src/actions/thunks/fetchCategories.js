@@ -5,6 +5,6 @@ export const fetchCategories = () => {
     return (dispatch) => {
         fetch(categoryApi)
             .then(resp => resp.json())
-            .then(resp => {dispatch({ type: 'ADD_CATEGORIES', categories: resp.trivia_categories})})
+            .then(resp => { dispatch({ type: 'ADD_CATEGORIES', categories: resp.trivia_categories})})
     }
 }

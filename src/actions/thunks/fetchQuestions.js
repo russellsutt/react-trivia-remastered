@@ -3,7 +3,7 @@
 export const fetchQuestions = (amount, category, difficulty) => {
 
     const url = () => {
-        if(category) {
+        if(category !== '') {
             return `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}`
         } else {
             return `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}`
@@ -15,6 +15,6 @@ export const fetchQuestions = (amount, category, difficulty) => {
         dispatch({ type: 'LOADING_QUESTIONS' })
         fetch(url())
             .then(resp => resp.json())
-            .then(resp => { dispatch({ type: 'ADD_QUESTIONS', questions: resp })})
+            .then(resp => { dispatch({ type: 'ADD_QUESTIONS', questions: resp.results }); console.log(resp.results)})
     }
 }
