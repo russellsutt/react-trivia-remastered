@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Container } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { connect } from 'react-redux'
+import { socket } from '../../App'
 import { fetchQuestions } from '../../actions/thunks/fetchQuestions'
 import { withRouter } from 'react-router-dom'
+
 
 
 class CreateGameForm extends Component {
@@ -32,7 +34,21 @@ class CreateGameForm extends Component {
     submitHandler = (e) => {
         e.preventDefault()
         this.props.fetchQuestions(this.state.amount, this.state.categoryId, this.state.difficulty)
-        this.props.history.push('/lobby')
+        let config = {
+            roomName: this.state.roomName,
+            category: this.state.category,
+            difficulty: this.state.difficulty,
+            amount: this.state.amount
+        }
+        socket.emit('createRoom', config, (res) => {
+            if(res.code === 'success') {
+                this.props.setRoom(this.state.roomName)
+                this.props.history.push('/lobby')
+            } else {
+                window.alert(res.msg)
+            }
+        })
+
     }
 
     render() {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-
 import { fetchCategories } from '../actions/thunks/fetchCategories'
 import CreateGameForm from './forms/CreateGameForm'
 
@@ -10,7 +9,6 @@ class CreateGame extends Component {
     
     componentDidMount() {
         this.props.fetchCategories()
-        console.log(this.props)
     }
 
 
