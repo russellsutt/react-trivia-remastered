@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { socket } from '../../App'
-import { fetchQuestions } from '../../actions/thunks/fetchQuestions'
 import { withRouter } from 'react-router-dom'
 
 
@@ -12,14 +11,11 @@ class CreateGameForm extends Component {
     state = {
         roomName: '',
         amount: '5',
-        category: '',
+        category: 'unselected-category',
         categoryId: '',
         difficulty: 'easy',
     }
 
-    componentDidMount() {
-        console.log(this.props)
-    }
     changeHandler = (e) => {
         this.setState({ [e.target.name]: e.target.value })
     }
@@ -33,21 +29,23 @@ class CreateGameForm extends Component {
 
     submitHandler = (e) => {
         e.preventDefault()
-        this.props.fetchQuestions(this.state.amount, this.state.categoryId, this.state.difficulty)
-        let config = {
-            roomName: this.state.roomName,
-            category: this.state.category,
-            difficulty: this.state.difficulty,
-            amount: this.state.amount
-        }
-        socket.emit('createRoom', config, (res) => {
-            if(res.code === 'success') {
-                this.props.setRoom(this.state.roomName)
-                this.props.history.push('/lobby')
-            } else {
-                window.alert(res.msg)
+        if (this.state.category === "unselected-category") {
+            window.alert('Please slect a category')
+        } else {
+            let config = {
+                roomName: this.state.roomName,
+                category: this.state.category,
+                difficulty: this.state.difficulty,
+                amount: this.state.amount
             }
-        })
+            socket.emit('createRoom', config, (res) => {
+                if(res.code === 'success') {
+                    this.props.history.push('/lobby')
+                } else {
+                    window.alert(res.msg)
+                }
+            })
+        }
 
     }
 
@@ -69,7 +67,7 @@ class CreateGameForm extends Component {
                 <Form.Group>
                     <h3>Category</h3>
                     <Form.Control as='select' name="category" value={this.state.category} onChange={this.changeHandler}>
-                        <option value=''>-- Please select a category --</option>
+                        <option value='unselected-category'>-- Please select a category --</option>
                         <option value=''>Miscellaneous</option>
                         {this.renderCategories()}
                     </Form.Control>
@@ -88,4 +86,4 @@ class CreateGameForm extends Component {
 }
 
 
-export default withRouter(connect(null, { fetchQuestions } )(CreateGameForm))
+export default withRouter(CreateGameForm)

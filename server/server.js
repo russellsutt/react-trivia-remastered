@@ -1,9 +1,9 @@
 const app = require('express')();
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
-const { TriviaManager } = require("./utils/triviaGameManager");
+const { TriviaGameManager } = require("./utils/TrviaGameManager");
 
-let games = new TriviaManager()
+let games = new TriviaGameManager()
 
 server.listen(3000, () => {
     console.log('listening on 3000')
@@ -15,17 +15,22 @@ io.on('connection', (socket) => {
 
 
     socket.on('createRoom', (config, callback) => {
+        console.log(config)
         if (games.checkRoomName(config.roomName)) {
-            games.addGame(socket.id, config.roomName)
+            games.addGame(socket.id, config.roomName, config.category, config.difficulty, config.amount)
             socket.join(config.roomName)
             callback({ code: "success"})
         } else {
             callback({
                 code: "ROOMERROR",
-                msg: `Cannot use empty string for room name.`
+                msg: `That room already exists.`
             })
         }
     })
+
+    socket.on('addPlayer', (config, callback) => {
+        
+    }
 
 
 
